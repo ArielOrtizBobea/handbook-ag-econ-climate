@@ -18,7 +18,7 @@ The updated code reproduces the published figures, and its estimates and standar
 
 ## Quick start
 
-Requirements: R (tested with R 4.6.1), and `make` if you want to use the commands below. Each script installs the packages it needs from CRAN.
+Requirements: R (tested with R 4.6.1), and `make` if you want to use the commands below. Each script installs the packages it needs from CRAN. On Linux, sf and terra also need the GDAL, GEOS and PROJ system libraries (see https://r-spatial.github.io/sf/#installing).
 
 ```bash
 git clone https://github.com/ArielOrtizBobea/handbook-ag-econ-climate.git
@@ -128,6 +128,10 @@ Updating the code turned up a few places where the code or the published figures
 6. **Figures 9 and 10.** The legend of the middle panels, which lists 7 basis columns, was drawn with `ncol = 3.5`, and the published version omits column 7. The updated script shows all seven.
 7. **Spatial error model (Figure 13).** The 2021 script selected columns by position after `BMisc::makeBalancedPanel()`. Current versions of BMisc return the columns in a different order, which pairs counties with the wrong neighbors and lowers the spatial error coefficient from 0.80 to 0.43. The updated script selects columns by name.
 8. **Objects defined interactively.** Script 1 used an object `brks` (Figure 3) and a file list (Figure 6) that were only defined in the interactive session, and scripts 2 and 5 used data.table without loading it, so these scripts failed in a new R session. These are fixed.
+
+## License
+
+The code is released under the MIT License (see `LICENSE`). The data files attached to the release remain subject to the terms of their providers (see [Data](#data)).
 
 ## Contact
 

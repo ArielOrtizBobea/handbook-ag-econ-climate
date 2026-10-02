@@ -15,7 +15,7 @@
 # Clean and load packages
   wants <- c("sf","RColorBrewer","fixest","data.table")
   needs <- wants[!(wants %in% installed.packages()[,"Package"])]
-  if(length(needs)) install.packages(needs)
+  if(length(needs)) install.packages(needs, repos="https://cloud.r-project.org")
   lapply(wants, function(i) require(i, character.only=TRUE))
   rm(needs,wants)
 

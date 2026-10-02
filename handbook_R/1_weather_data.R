@@ -29,9 +29,9 @@
   gc()
 
 # Clean and load packages
-  wants <- c("terra","sf","RColorBrewer","Matrix","data.table","readr","spam","FNN")
+  wants <- c("terra","sf","RColorBrewer","Matrix","data.table","R.utils","readr","spam","FNN")
   needs <- wants[!(wants %in% installed.packages()[,"Package"])]
-  if(length(needs)) install.packages(needs)
+  if(length(needs)) install.packages(needs, repos="https://cloud.r-project.org")
   lapply(wants, function(i) require(i, character.only=TRUE))
   rm(needs,wants)
   sf_use_s2(FALSE) # planar geometry on longitude/latitude, as in the 2021 code

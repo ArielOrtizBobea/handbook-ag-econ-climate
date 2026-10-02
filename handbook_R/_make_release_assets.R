@@ -23,7 +23,7 @@
 # Packages (raster is only needed to read the 2021 RasterStack object)
   wants <- c("data.table","R.utils","terra","raster")
   needs <- wants[!(wants %in% installed.packages()[,"Package"])]
-  if(length(needs)) install.packages(needs)
+  if(length(needs)) install.packages(needs, repos="https://cloud.r-project.org")
   invisible(lapply(wants, function(i) require(i, character.only=TRUE)))
 
 # Directories

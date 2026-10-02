@@ -18,7 +18,7 @@
 # Install and load necessary packages
   wants <- c("plm") # contains the Hedonic dataset
   has   <- wants %in% rownames(installed.packages())
-  if(any(!has)) install.packages(wants[!has])
+  if(any(!has)) install.packages(wants[!has], repos="https://cloud.r-project.org")
   sapply(wants, function(i) require(i, character.only=TRUE))
 
 # Load specification chart function
