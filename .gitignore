@@ -1,0 +1,15 @@
+# Data, downloaded and produced by the scripts in handbook_R/
+data/
+data2/
+
+# Files attached to the GitHub release (built by handbook_R/_make_release_assets.R)
+release/
+
+# R and RStudio
+.Rhistory
+.RData
+.Rproj.user/
+Rplots.pdf
+
+# macOS
+.DS_Store
