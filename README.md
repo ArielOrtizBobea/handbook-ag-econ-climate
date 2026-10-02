@@ -32,7 +32,7 @@ The default run downloads about 650 MB and takes about 10 minutes on a recent la
 
 ### R packages
 
-The version of every R package used to produce the figures is recorded in `handbook_R/renv.lock` with [renv](https://rstudio.github.io/renv/). `renv::restore()` (run by `make packages` and `make all`) installs these versions into a library inside the project, so your other R libraries are not affected. The packages come from the snapshot of CRAN taken on 1 October 2026 by Posit Package Manager, which provides pre-built packages for Windows, macOS and Linux, so the restore takes a few minutes.
+The version of every R package used to produce the figures is recorded in `handbook_R/renv.lock` with [renv](https://rstudio.github.io/renv/). `renv::restore()` (run by `make packages` and `make all`) installs these versions into a library inside the project, so your other R libraries are not affected. The packages come from the snapshot of CRAN taken on 1 October 2026 by Posit Package Manager, which provides pre-built packages for Windows, macOS and Linux, so the restore takes a few minutes. The lockfile was created with R 4.6.1. With another version of R, renv shows a warning and may have to build some packages from source, which requires compilers.
 
 To use your own R library instead, delete `handbook_R/.Rprofile`. Each script then installs any package it is missing from CRAN. The main versions used are sf 1.1-3, terra 1.9-50, fixest 0.14.2, prism 0.3.0, spdep 1.4-2, splm 1.6-5 and data.table 1.18.6.1. Two version requirements matter: prism 0.3.0 or later, because PRISM changed its download service in 2025, and fixest 0.14 or later, for the names of the arguments of `ssc()`.
 
