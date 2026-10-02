@@ -1,6 +1,7 @@
 # Run the R scripts in handbook_R/ from the root of the repository.
 #
-#   make all              download the data and run scripts 0-5 in order
+#   make all              install the pinned packages, download the data and run scripts 0-5
+#   make packages         install the package versions recorded in handbook_R/renv.lock
 #   make data             0_download_data.R
 #   make weather          1_weather_data.R           (figures 1-7)
 #   make nonlinear        2_nonlinear_effects.R      (figures 8-10)
@@ -13,9 +14,12 @@
 R := Rscript
 CODE := handbook_R
 
-.PHONY: all data weather nonlinear timevarying spatial robustness block list
+.PHONY: all packages data weather nonlinear timevarying spatial robustness block list
 
-all: data weather nonlinear timevarying spatial robustness
+all: packages data weather nonlinear timevarying spatial robustness
+
+packages:
+	cd $(CODE) && $(R) -e "renv::restore(prompt = FALSE)"
 
 data:
 	cd $(CODE) && $(R) 0_download_data.R

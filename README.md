@@ -18,7 +18,7 @@ The updated code reproduces the published figures, and its estimates and standar
 
 ## Quick start
 
-Requirements: R (tested with R 4.6.1), and `make` if you want to use the commands below. Each script installs the packages it needs from CRAN. On Linux, sf and terra also need the GDAL, GEOS and PROJ system libraries (see https://r-spatial.github.io/sf/#installing).
+Requirements: R (the figures were produced with R 4.6.1), and `make` if you want to use the commands below. On Linux, sf and terra also need the GDAL, GEOS and PROJ system libraries (see https://r-spatial.github.io/sf/#installing).
 
 ```bash
 git clone https://github.com/ArielOrtizBobea/handbook-ag-econ-climate.git
@@ -26,11 +26,15 @@ cd handbook-ag-econ-climate
 make all
 ```
 
-`make all` runs the six scripts in order and writes the figures to `figures/`. Alternatively, open `handbook_R/handbook_R.Rproj` in RStudio and run the scripts in the order they are numbered. The scripts expect `handbook_R` to be the working directory, which the RStudio project sets.
+`make all` installs the R packages (see below), runs the six scripts in order and writes the figures to `figures/`. Alternatively, open `handbook_R/handbook_R.Rproj` in RStudio, run `renv::restore()` once, and run the scripts in the order they are numbered. The scripts expect `handbook_R` to be the working directory, which the RStudio project sets.
 
 The default run downloads about 650 MB and takes about 10 minutes on a recent laptop, most of it in `1_weather_data.R`. It uses about 1.5 GB of disk space and up to 6 GB of memory.
 
-The code was tested with R 4.6.1 and sf 1.1.3, terra 1.9.50, fixest 0.14.2, prism 0.3.0, spdep 1.4.2, splm 1.6.5, data.table 1.18.6.1 and Matrix 1.7.5. Two version requirements matter: prism 0.3.0 or later, because PRISM changed its download service in 2025, and fixest 0.14 or later, for the names of the arguments of `ssc()`. Update these packages if they are already installed in an older version.
+### R packages
+
+The version of every R package used to produce the figures is recorded in `handbook_R/renv.lock` with [renv](https://rstudio.github.io/renv/). `renv::restore()` (run by `make packages` and `make all`) installs these versions into a library inside the project, so your other R libraries are not affected. The packages come from the snapshot of CRAN taken on 1 October 2026 by Posit Package Manager, which provides pre-built packages for Windows, macOS and Linux, so the restore takes a few minutes.
+
+To use your own R library instead, delete `handbook_R/.Rprofile`. Each script then installs any package it is missing from CRAN. The main versions used are sf 1.1-3, terra 1.9-50, fixest 0.14.2, prism 0.3.0, spdep 1.4-2, splm 1.6-5 and data.table 1.18.6.1. Two version requirements matter: prism 0.3.0 or later, because PRISM changed its download service in 2025, and fixest 0.14 or later, for the names of the arguments of `ssc()`.
 
 ## Scripts
 
