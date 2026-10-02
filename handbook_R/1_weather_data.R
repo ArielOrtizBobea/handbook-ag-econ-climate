@@ -143,7 +143,7 @@
 
     rstack <- rast(rname)
 
-  } else { # Takes about an hour
+  } else { # Takes about 30 minutes
 
     # NLCD land cover raster (30 m), e.g. NLCD_2016_Land_Cover_L48_20190424.img,
     # placed in data/NLCD. See README for where to find it.
@@ -168,7 +168,7 @@
         r <- id[min(rows[[tiles$r[t]]]):max(rows[[tiles$r[t]]]), min(cols[[tiles$c[t]]]):max(cols[[tiles$c[t]]]), drop=FALSE]
         if (all(is.na(values(r)))) return(NULL) # tile without land
         p <- as.polygons(r, aggregate=FALSE, na.rm=TRUE)
-        p <- project(p, crs(nlcd))
+        p <- vect(st_transform(st_as_sf(p), crs(nlcd))) # sf rather than terra::project, whose datum shift moves the polygons by ~0.2 m
 
         # 2. Crop land cover to tile
         d <- crop(nlcd, p, snap="out")
@@ -191,7 +191,7 @@
     range(out[, sum(share), by=id]$V1)
 
     # Store in a raster, one layer per land cover class
-    classes <- sort(unique(out$value))
+    classes <- setdiff(sort(unique(out$value)), 0) # 0 is "unclassified"
     rstack <- rast(lapply(classes, function(k) {
       v <- rep(NA_real_, ncell(mask))
       v[unique(out$id)] <- 0

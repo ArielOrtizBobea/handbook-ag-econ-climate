@@ -12,7 +12,7 @@
 #   - County-level PRISM data for 1981-2020 and land cover shares over the PRISM
 #     grid, which are outputs of 1_weather_data.R
 #
-# Default download: about 600 MB, a few minutes.
+# Default download: about 650 MB, a few minutes.
 #
 # Files that are not downloaded from their original provider are attached to
 # the GitHub release "data-v1" of this repository. They are the versions used
@@ -50,7 +50,7 @@
 
 # Settings
   full <- FALSE          # TRUE to also download the PRISM files for 1981-2020
-  ghcn_current <- FALSE  # TRUE to use today's GHCN-Daily files instead of the 2021 ones
+  ghcn_current <- FALSE  # TRUE to use today's GHCN-Daily files instead of the 2021 ones (delete ../data/GHCN first if it exists)
   release <- "https://github.com/ArielOrtizBobea/handbook-ag-econ-climate/releases/download/data-v1"
   options(timeout = 3600) # some files are large
 

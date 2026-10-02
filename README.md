@@ -4,7 +4,7 @@ R code that reproduces the figures in
 
 > Ortiz-Bobea, A. (2021). The empirical analysis of climate change impacts and adaptation in agriculture. In C. B. Barrett and D. R. Just (Eds.), *Handbook of Agricultural Economics*, Vol. 5, Chapter 76, pp. 3981–4073. Elsevier. https://doi.org/10.1016/bs.hesagr.2021.10.002
 
-This is an updated version of the code archived with the chapter at the Cornell Institute for Social and Economic Research (CISER), https://doi.org/10.6077/fb1a-c376. The 2021 code relied on R packages that have since been removed from CRAN (rgdal, rgeos, maptools) or superseded. This version uses current packages, keeps the structure of the 2021 scripts, and downloads its data, so the repository holds only code.
+This is an updated version of the code archived with the chapter at the Cornell Institute for Social and Economic Research (CISER), https://doi.org/10.6077/fb1a-c376. The 2021 code relied on R packages that have since been removed from CRAN (rgdal, rgeos, maptools) or superseded. This version uses current packages and keeps the structure of the 2021 scripts. It downloads its data, so the repository holds only code.
 
 ## What changed
 
@@ -14,7 +14,7 @@ This is an updated version of the code archived with the chapter at the Cornell 
 - `0_download_data.R` downloads the data. A few files that providers no longer distribute, or that took a day of computing to produce, are attached to a release of this repository.
 - Each figure sits in a marked block that can be re-run on its own (`make block name=fig8`).
 
-The updated code reproduces the published figures, and its estimates and standard errors match those of the 2021 code to about 10 significant digits (see [How the update was checked](#how-the-update-was-checked)).
+The updated code reproduces the published figures, and its estimates and standard errors agree with those of the 2021 code to at least seven significant digits (see [How the update was checked](#how-the-update-was-checked)).
 
 ## Quick start
 
@@ -28,7 +28,9 @@ make all
 
 `make all` runs the six scripts in order and writes the figures to `figures/`. Alternatively, open `handbook_R/handbook_R.Rproj` in RStudio and run the scripts in the order they are numbered. The scripts expect `handbook_R` to be the working directory, which the RStudio project sets.
 
-The default run downloads about 650 MB and takes about 15 minutes on a recent laptop. It needs about 3 GB of disk space and 8 GB of memory.
+The default run downloads about 650 MB and takes about 10 minutes on a recent laptop, most of it in `1_weather_data.R`. It uses about 1.5 GB of disk space and up to 6 GB of memory.
+
+The code was tested with R 4.6.1 and sf 1.1.3, terra 1.9.50, fixest 0.14.2, prism 0.3.0, spdep 1.4.2, splm 1.6.5, data.table 1.18.6.1 and Matrix 1.7.5. Two version requirements matter: prism 0.3.0 or later, because PRISM changed its download service in 2025, and fixest 0.14 or later, for the names of the arguments of `ssc()`. Update these packages if they are already installed in an older version.
 
 ## Scripts
 
@@ -61,10 +63,10 @@ All scripts are in `handbook_R/`.
 
 The release files are attached to the release [`data-v1`](https://github.com/ArielOrtizBobea/handbook-ag-econ-climate/releases/tag/data-v1) of this repository. They are the files used for the chapter in 2021, copied from the CISER archive. The reasons for archiving each one:
 
-- **County-level PRISM weather.** Producing these files with `1_weather_data.R` takes about 30,000 daily PRISM grids (about 120 GB of disk) and a day of computing. They can be rebuilt (see below).
+- **County-level PRISM weather.** Producing these files with `1_weather_data.R` requires about 30,000 daily PRISM grids (about 120 GB of disk) and a day of computing. They can be rebuilt (see below).
 - **Land cover shares.** They were computed from the NLCD 2016 land cover release of April 2019, which MRLC no longer distributes. Later NLCD releases revised the 2016 map.
 - **Corn yields.** The Quick Stats API requires a key. The export can be repeated at https://quickstats.nass.usda.gov with Program SURVEY, Sector CROPS, Group FIELD CROPS, Commodity CORN, Category YIELD, Data Item "CORN, GRAIN - YIELD, MEASURED IN BU / ACRE", Geographic Level COUNTY and Years 1981–2020, split into two periods because of the export size limit.
-- **GHCN-Daily.** NOAA revises the archive continuously. In October 2026, the 2020 file had about 375 more stations reporting maximum temperature on August 16, 2020 than in May 2021, and revised values for 665 of the stations present in both. Setting `ghcn_current <- TRUE` in `0_download_data.R` uses today's files, which changes Figures 1, 3 and 4 slightly.
+- **GHCN-Daily.** NOAA revises the archive continuously. In October 2026, the 2020 file had about 375 more stations reporting maximum temperature on August 16, 2020 than in May 2021, and revised values for 665 of the stations present in both. Setting `ghcn_current <- TRUE` in `0_download_data.R` (after deleting `data/GHCN`, if present) uses today's files, which changes Figures 1, 3 and 4 slightly.
 
 Please cite the data providers when using these data. PRISM data: PRISM Climate Group, Oregon State University, https://prism.oregonstate.edu. GHCN-Daily: Menne, M. J., et al. (2012), https://doi.org/10.7289/V5D21VHZ.
 
@@ -74,7 +76,7 @@ Set `full <- TRUE` at the top of `0_download_data.R` and of `1_weather_data.R`, 
 
 The rebuild reproduces the archived files. The county aggregation matrix is identical to the 2021 one, and the exposure bins recomputed from current PRISM files for January 1981 and August 2020 equal the 2021 values exactly.
 
-To also recompute the land cover shares, delete `data2/PRISM/nlcd_prism_weights.tif` and place an NLCD land cover raster (`.img` or `.tif`) in `data/NLCD`. The file used in 2021, `NLCD_2016_Land_Cover_L48_20190424.img`, is part of the CISER archive.
+To also recompute the land cover shares, delete `data2/PRISM/nlcd_prism_weights.tif` and place an NLCD land cover raster (`.img` or `.tif`) in `data/NLCD`. The file used in 2021, `NLCD_2016_Land_Cover_L48_20190424.img`, is part of the CISER archive. With that file, the recomputation takes about half an hour and reproduces the archived shares: 375 of 7.7 million values differ, by at most 0.006 percentage points (about one 30 m pixel in a 4 km grid cell).
 
 ## Re-running one figure
 
@@ -107,7 +109,7 @@ The scripts are divided into blocks marked by comment lines such as
 
 ## How the update was checked
 
-I ran the 2021 versions of scripts 2–5 on the archived data, with their original packages wherever these still install (lfe, sp, raster). These runs reproduce the published Figures 8–14. The updated scripts match them: point estimates agree to about 1e-11 in relative terms, standard errors to about 1e-10 (1e-7 for the spatial error model), and the 72 models of Figure 14 have the same estimates, confidence intervals and ordering.
+The 2021 versions of scripts 2–5, run on the archived data with their original packages wherever these still install (lfe, sp, raster), reproduce the published Figures 8–14. The updated scripts match these runs. Point estimates agree to about 1e-11 in relative terms and standard errors to about 1e-10 (1e-7 for the spatial error model). The 72 models of Figure 14 have the same estimates and ordering, and confidence intervals that agree to six significant digits.
 
 Pixel by pixel, the figures produced by the updated code compare with the published ones as follows.
 
