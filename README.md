@@ -1,20 +1,31 @@
 # Replication code for Ortiz-Bobea (2021), Handbook of Agricultural Economics
 
+**Version 2.0 (October 2026).** Version 1.0 is the replication package deposited with the chapter in 2021 at the Cornell Institute for Social and Economic Research (CISER), https://doi.org/10.6077/fb1a-c376.
+
 R code that reproduces the figures in
 
 > Ortiz-Bobea, A. (2021). The empirical analysis of climate change impacts and adaptation in agriculture. In C. B. Barrett and D. R. Just (Eds.), *Handbook of Agricultural Economics*, Vol. 5, Chapter 76, pp. 3981–4073. Elsevier. https://doi.org/10.1016/bs.hesagr.2021.10.002
 
-This is an updated version of the code archived with the chapter at the Cornell Institute for Social and Economic Research (CISER), https://doi.org/10.6077/fb1a-c376. The 2021 code relied on R packages that have since been removed from CRAN (rgdal, rgeos, maptools) or superseded. This version uses current packages and keeps the structure of the 2021 scripts. It downloads its data, so the repository holds only code.
+Version 1.0 relied on R packages that have since been removed from CRAN (rgdal, rgeos, maptools) or superseded. Version 2.0 uses current packages and keeps the structure of the 2021 scripts. It downloads its data, so the repository holds only code.
 
-## What changed
+## Differences from version 1.0
 
-- sf and terra replace sp, rgdal, rgeos, maptools and raster for spatial data.
-- fixest replaces lfe for fixed-effects regressions. Its small-sample corrections are set to match lfe, so the standard errors are the same as in the chapter.
-- The world map in Figure 1 comes from Natural Earth (rnaturalearth), where the 2021 code used rworldmap.
-- `0_download_data.R` downloads the data. A few files that providers no longer distribute, or that took a day of computing to produce, are attached to a release of this repository.
-- Each figure sits in a marked block that can be re-run on its own (`make block name=fig8`).
+Version 2.0 reproduces the published figures, and its estimates and standard errors agree with those of version 1.0 to at least seven significant digits (see [How the update was checked](#how-the-update-was-checked)).
 
-The updated code reproduces the published figures, and its estimates and standard errors agree with those of the 2021 code to at least seven significant digits (see [How the update was checked](#how-the-update-was-checked)).
+**Packages.** sf and terra replace sp, rgdal, rgeos, maptools and raster for spatial data. fixest replaces lfe for fixed-effects regressions, with small-sample corrections set to match lfe, so the standard errors are the same as in the chapter. The world map in Figure 1 comes from Natural Earth (rnaturalearth), where version 1.0 used rworldmap. renv records the version of every package.
+
+**Data.** Version 1.0 included its data in the CISER archive (2 GB compressed, 22 GB uncompressed, most of it a 30 m land cover image). Version 2.0 downloads its data with `0_download_data.R`, which replaces `0_download_prism.R`. A few files that providers no longer distribute, or that took a day of computing to produce, are attached to a release of this repository (see [Data](#data)). By default, `1_weather_data.R` computes temperature exposure bins for August 2020 only and reads the county-level data for 1981–2020 from the release; `full <- TRUE` rebuilds them.
+
+**Running the code.** A Makefile runs the scripts, and each figure sits in a marked block that can be re-run on its own (`make block name=fig8`). `functions.R` has three new functions: county centroids (`fun$labpt`), the grid cells covered by each county (`fun$extract_weights`) and maps with a legend drawn like that of `raster::plot` (`fun$plot_raster`). `fun$conley` now takes fixest models. This README replaces `ReadMe.txt`.
+
+**Corrections.**
+
+1. **Figure 7.** The archived script used 50-hour color intervals up to 900 hours, while the published figure uses 24-hour intervals up to 744 hours and a taller legend. Version 2.0 reproduces the published figure.
+2. **Figures 9 and 10.** The legend of the middle panels, which lists 7 basis columns, was drawn with `ncol = 3.5`, and the published version omits column 7. Version 2.0 shows all seven.
+3. **Spatial error model (Figure 13).** The 2021 script selected columns by position after `BMisc::makeBalancedPanel()`. Current versions of BMisc return the columns in a different order, which pairs counties with the wrong neighbors and lowers the spatial error coefficient from 0.80 to 0.43. Version 2.0 selects columns by name.
+4. **Objects defined interactively.** Script 1 used an object `brks` (Figure 3) and a file list (Figure 6) that were only defined in the interactive session, and scripts 2 and 5 used data.table without loading it, so these scripts failed in a new R session.
+
+**Kept from version 1.0.** Some choices in the 2021 code differ from the text of the chapter. Version 2.0 keeps them, so that it reproduces the published figures, and flags them in comments (see [Notes on the 2021 code](#notes-on-the-2021-code)).
 
 ## Quick start
 
@@ -117,21 +128,17 @@ The 2021 versions of scripts 2–5, run on the archived data with their original
 
 Pixel by pixel, the figures produced by the updated code compare with the published ones as follows.
 
-- Figures 2 and 5–14 are identical up to anti-aliasing, except for the legends of Figures 9 and 10 (item 6 below).
+- Figures 2 and 5–14 are identical up to anti-aliasing, except for the legends of Figures 9 and 10 (correction 2 above).
 - Figures 1, 3 and 4 differ in a few pixels along coastlines and county borders. The Natural Earth coastlines differ slightly from those of rworldmap, and sf draws polygon outlines slightly differently than sp. The data shown are the same.
 
 ## Notes on the 2021 code
 
-Updating the code turned up a few places where the code or the published figures depart from the text of the chapter. The updated code reproduces the published figures, so it keeps choices 1–3 and flags them in comments.
+Some choices in the 2021 code differ from the text of the chapter. Version 2.0 keeps them, so that it reproduces the published figures, and flags them in comments.
 
 1. **Sample of counties in Figures 8–12 and 14.** Scripts 2, 3 and 5 project the county map to an Albers projection and then keep counties whose centroid has `x > -100`. Because `x` is in meters after the projection, this keeps counties east of about 96°W (2,127 counties) where the text says east of the 100th meridian (2,510 counties). Script 4 (Figure 13) does not project the map and uses the 100th meridian.
 2. **Growing seasons in Figure 14.** The specification labeled March–August uses April–August (months 4 to 8), and the one labeled April–September uses March–September (months 3 to 9). The baseline model of Figure 14 is therefore estimated over April–August.
 3. **Sample in Figures 11 and 12.** The time-varying model uses counties in Illinois, Indiana, Iowa and Ohio. The captions describe the sample as counties east of the 100th meridian.
 4. **Captions.** The captions of Figures 9, 10 and 12 say that standard errors are clustered by state. The code clusters them by state and year. The caption of Figure 4 describes panels that differ from those in the figure.
-5. **Figure 7.** The archived script used 50-hour color intervals up to 900 hours, while the published figure uses 24-hour intervals up to 744 hours and a taller legend. The updated script reproduces the published figure.
-6. **Figures 9 and 10.** The legend of the middle panels, which lists 7 basis columns, was drawn with `ncol = 3.5`, and the published version omits column 7. The updated script shows all seven.
-7. **Spatial error model (Figure 13).** The 2021 script selected columns by position after `BMisc::makeBalancedPanel()`. Current versions of BMisc return the columns in a different order, which pairs counties with the wrong neighbors and lowers the spatial error coefficient from 0.80 to 0.43. The updated script selects columns by name.
-8. **Objects defined interactively.** Script 1 used an object `brks` (Figure 3) and a file list (Figure 6) that were only defined in the interactive session, and scripts 2 and 5 used data.table without loading it, so these scripts failed in a new R session. These are fixed.
 
 ## License
 
